@@ -9,16 +9,18 @@ module ACS		                        // add-compare-select
 
    output logic        selection,
    output logic        valid_o,
-   output      [7:0] path_cost);  
+   output logic     [7:0] path_cost);  
 
-   wire  [7:0] path_cost_0;			   // branch metric + path metric
-   wire  [7:0] path_cost_1;
+   logic  [7:0] path_cost_0;			   // branch metric + path metric
+   logic  [7:0] path_cost_1;
 
 /* Fill in the guts per ACS instructions
 */
    // Compute path costs as the sum of path and branch metrics
-   wire [7:0] path_cost_0 = path_0_pmc + {6'b000000, path_0_bmc};  // Extend branch metric to 8 bits
-   wire [7:0] path_cost_1 = path_1_pmc + {6'b000000, path_1_bmc};  // Extend branch metric to 8 bits
+	always_comb begin
+		path_cost_0 = path_0_pmc + {6'b000000, path_0_bmc};  // Extend branch metric to 8 bits
+		path_cost_1 = path_1_pmc + {6'b000000, path_1_bmc};  // Extend branch metric to 8 bits
+	end
 
    // Determine output validity
    assign valid_o = path_0_valid | path_1_valid;

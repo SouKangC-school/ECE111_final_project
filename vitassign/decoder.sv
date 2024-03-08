@@ -63,11 +63,11 @@ module decoder
 
 //Trelis memory write operation
    logic   [1:0]       mem_bank;
-   logic   [1:0]       mem_bank_buf;
-   logic   [1:0]       mem_bank_buf_buf;
-   logic               mem_bank_buf_buf_buf;
-   logic               mem_bank_buf_buf_buf_buf;
-   logic               mem_bank_buf_buf_buf_buf_buf;
+   logic   [1:0]       mem_bank_buf1;
+   logic   [1:0]       mem_bank_buf2;
+   logic               mem_bank_buf3;
+   logic               mem_bank_buf4;
+   logic               mem_bank_buf5;
    logic   [9:0]       wr_mem_counter;
    logic   [9:0]       rd_mem_counter;
 
@@ -142,6 +142,24 @@ module decoder
    ACS      ACS101(validity[2],validity[3],bmc101_path_0_bmc,bmc101_path_1_bmc,path_cost[2],path_cost[3],ACS101_selection,ACS101_valid_o,ACS101_path_cost);
    ACS      ACS110(validity[5],validity[4],bmc110_path_0_bmc,bmc110_path_1_bmc,path_cost[5],path_cost[4],ACS110_selection,ACS110_valid_o,ACS110_path_cost);
    ACS      ACS111(validity[6],validity[7],bmc111_path_0_bmc,bmc111_path_1_bmc,path_cost[6],path_cost[7],ACS111_selection,ACS111_valid_o,ACS111_path_cost);
+   
+   // ACS      ACS000(validity[0],validity[1],bmc000_path_0_bmc,bmc001_path_1_bmc,path_cost[0],path_cost[1],ACS000_selection,ACS000_valid_o,ACS000_path_cost);
+   // ACS      ACS001(validity[3],validity[2],bmc011_path_0_bmc,bmc010_path_1_bmc,path_cost[3],path_cost[2],ACS001_selection,ACS001_valid_o,ACS001_path_cost);
+   // ACS      ACS010(validity[4],validity[5],bmc011_path_0_bmc,bmc101_path_1_bmc,path_cost[4],path_cost[5],ACS010_selection,ACS010_valid_o,ACS010_path_cost);
+   // ACS      ACS011(validity[7],validity[6],bmc111_path_0_bmc,bmc110_path_1_bmc,path_cost[7],path_cost[6],ACS011_selection,ACS011_valid_o,ACS011_path_cost);
+   // ACS      ACS100(validity[1],validity[0],bmc001_path_0_bmc,bmc000_path_1_bmc,path_cost[1],path_cost[0],ACS100_selection,ACS100_valid_o,ACS100_path_cost);
+   // ACS      ACS101(validity[2],validity[3],bmc010_path_0_bmc,bmc011_path_1_bmc,path_cost[2],path_cost[3],ACS101_selection,ACS101_valid_o,ACS101_path_cost);
+   // ACS      ACS110(validity[5],validity[4],bmc101_path_0_bmc,bmc010_path_1_bmc,path_cost[5],path_cost[4],ACS110_selection,ACS110_valid_o,ACS110_path_cost);
+   // ACS      ACS111(validity[6],validity[7],bmc110_path_0_bmc,bmc111_path_1_bmc,path_cost[6],path_cost[7],ACS111_selection,ACS111_valid_o,ACS111_path_cost);
+
+   // ACS      ACS000(validity[0],validity[1],bmc000_path_0_bmc,bmc001_path_1_bmc,path_cost[0],path_cost[1],ACS000_selection,ACS000_valid_o,ACS000_path_cost);
+   // ACS      ACS001(validity[3],validity[2],bmc011_path_0_bmc,bmc010_path_1_bmc,path_cost[3],path_cost[2],ACS001_selection,ACS001_valid_o,ACS001_path_cost);
+   // ACS      ACS010(validity[4],validity[5],bmc100_path_0_bmc,bmc101_path_1_bmc,path_cost[4],path_cost[5],ACS010_selection,ACS010_valid_o,ACS010_path_cost);
+   // ACS      ACS011(validity[7],validity[6],bmc111_path_0_bmc,bmc110_path_1_bmc,path_cost[7],path_cost[6],ACS011_selection,ACS011_valid_o,ACS011_path_cost);
+   // ACS      ACS100(validity[1],validity[0],bmc001_path_0_bmc,bmc000_path_1_bmc,path_cost[1],path_cost[0],ACS100_selection,ACS100_valid_o,ACS100_path_cost);
+   // ACS      ACS101(validity[2],validity[3],bmc010_path_0_bmc,bmc011_path_1_bmc,path_cost[2],path_cost[3],ACS101_selection,ACS101_valid_o,ACS101_path_cost);
+   // ACS      ACS110(validity[5],validity[4],bmc101_path_0_bmc,bmc100_path_1_bmc,path_cost[5],path_cost[4],ACS110_selection,ACS110_valid_o,ACS110_path_cost);
+   // ACS      ACS111(validity[6],validity[7],bmc110_path_0_bmc,bmc111_path_1_bmc,path_cost[6],path_cost[7],ACS111_selection,ACS111_valid_o,ACS111_path_cost);
    
    assign selection_nets  =  {ACS111_selection,ACS110_selection,ACS101_selection,ACS100_selection,
                               ACS011_selection,ACS010_selection,ACS001_selection,ACS000_selection};
@@ -235,8 +253,10 @@ module decoder
       if(!rst)
          mem_bank <= 2'b00;
       else begin
-         if(wr_mem_counter==10'b1111111111)
+         if(wr_mem_counter==10'b1111111111)begin
                mem_bank <= mem_bank + 2'b01;
+                           // $stop;
+         end
       end
 
    always @ (posedge clk)    begin
@@ -345,16 +365,16 @@ module decoder
 //Trace back module operation
 
    always @(posedge clk)
-      mem_bank_buf   <= mem_bank;
+      mem_bank_buf1   <= mem_bank;
    
    always @(posedge clk)
-      mem_bank_buf_buf   <= mem_bank_buf;
+      mem_bank_buf2   <= mem_bank_buf1;
 
    always @ (posedge clk, negedge rst)
       if(!rst)
             enable_tbu_0   <= 1'b0;
       else begin
-         if(mem_bank_buf_buf==2'b10)
+         if(mem_bank_buf2==2'b10)
             enable_tbu_0   <= 1'b1;
          else
             enable_tbu_0   <= enable_tbu_0;
@@ -364,14 +384,14 @@ module decoder
       if(!rst)
             enable_tbu_1   <= 1'b0;
       else begin
-         if(mem_bank_buf_buf==2'b11)
+         if(mem_bank_buf2==2'b11)
             enable_tbu_1   <= 1'b1;
          else
             enable_tbu_1   <= enable_tbu_1;
       end   
    
    always @ (posedge clk)
-      case(mem_bank_buf_buf)
+      case(mem_bank_buf2)
          2'b00:	  begin
             d_in_0_tbu_0   <= d_o_mem_D;
             d_in_1_tbu_0   <= d_o_mem_C;
@@ -467,7 +487,7 @@ module decoder
 
 // Display memory module operation
    always @ (posedge clk)
-      mem_bank_buf_buf_buf <= mem_bank_buf_buf[0];
+      mem_bank_buf3 <= mem_bank_buf2[0];
 
    always @ (posedge clk)
       if(!rst)
@@ -486,7 +506,7 @@ module decoder
          rd_mem_counter_disp  <= rd_mem_counter_disp + 10'd1;   
    
    always @ (posedge clk)
-      case(mem_bank_buf_buf_buf)
+      case(mem_bank_buf3)
          1'b0:
          begin
             addr_disp_mem_0   <= rd_mem_counter_disp; 
@@ -500,12 +520,12 @@ module decoder
       endcase
 
    always @ (posedge clk) begin
-      mem_bank_buf_buf_buf_buf     <= mem_bank_buf_buf_buf;
-      mem_bank_buf_buf_buf_buf_buf <= mem_bank_buf_buf_buf_buf;
+      mem_bank_buf4     <= mem_bank_buf3;
+      mem_bank_buf5 <= mem_bank_buf4;
    end
 
    always @ (posedge clk) begin
-      if (mem_bank_buf_buf_buf_buf_buf)
+      if (mem_bank_buf5)
          d_out <= d_o_disp_mem_1; // If the last buffer bit is high, output from display memory 1
       else
          d_out <= d_o_disp_mem_0; // If the last buffer bit is low, output from display memory 0

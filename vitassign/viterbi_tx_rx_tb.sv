@@ -3,6 +3,7 @@ module viterbi_tx_rx_tb();
    bit clk;
    bit rst;
    bit encoder_i;		   // original data
+   // bit enc_i_hist[2048];   // history thereof
    bit enc_i_hist[2048];   // history thereof
    bit enable_encoder_i;
    wire decoder_o;		   // decoded data
@@ -26,22 +27,59 @@ module viterbi_tx_rx_tb();
 
    always @(posedge clk) begin
 	 enc_i_hist[i] <= encoder_i;
+   //  $display("input: %d", encoder_i);
+   //  if(i % 1024 == 0) $stop;
 	 i <= i+1;
 	 l <= l+1;
    end
    initial begin   
+   //  #1000
+   //  #102400
+   //  #102400
+   //  #102400
+   //  #102400
+   //  #500
+   //  #200
+    
 	 #410400;
+    $stop;
 	 forever @(posedge clk) begin
 	   dec_o_hist[k] <= decoder_o;
 	   k<=k+1;
      end
    end
 
+   // initial begin
+
+   //    #1000
+   //    #102400
+   //    #102400
+   //    #102400
+   //    #102400
+   //    #500
+   //    #200
+
+   //    #25600
+   //    $stop;
+    
+   //    for(j=0; j<256; j=j+1) 		// checker & scoreboard
+   //    if(enc_i_hist[j]==dec_o_hist[j]) begin 
+   //          $displayb("yaa! in = %b, out = %b",enc_i_hist[j],dec_o_hist[j]);
+   //          good++;
+   //    end
+   //    else begin
+   //          $displayb("boo! in = %b, out = %b",enc_i_hist[j],dec_o_hist[j]);
+   //          bad++;
+   //    end
+   // end
+
    initial begin
       clk      =  1'b1;
       #1000
       rst       =  1'b1;
       enable_encoder_i  =  1'b1;
+      $display("enable encoder");
+      $stop;
       #100
       encoder_i=  1'b1; 
       #100
