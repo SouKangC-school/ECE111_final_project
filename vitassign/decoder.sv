@@ -255,6 +255,9 @@ module decoder
             addr_mem_D        <= rd_mem_counter;
 
             wr_mem_A          <= 1'b1;
+            wr_mem_B          <= 1'b0;
+            wr_mem_C          <= 1'b0;
+            wr_mem_D          <= 1'b0;
 /* other wr_mems = 0
 */	        
          end
@@ -265,6 +268,9 @@ module decoder
             addr_mem_D        <= 10'd0;
 
             wr_mem_B          <= 1'b1;
+            wr_mem_A          <= 1'b0;
+            wr_mem_C          <= 1'b0;
+            wr_mem_D          <= 1'b0;
 /* other wr_mems = 0
 */	        
          end		       
@@ -275,6 +281,9 @@ module decoder
             addr_mem_D        <= rd_mem_counter;
 
             wr_mem_C       <= 1'b1;
+            wr_mem_A          <= 1'b0;
+            wr_mem_B          <= 1'b0;
+            wr_mem_D          <= 1'b0;
 /* other wr_mems = 0
 */	        
          end
@@ -285,6 +294,9 @@ module decoder
             addr_mem_D        <= wr_mem_counter;
 
             wr_mem_D       <= 1'b1;
+            wr_mem_A          <= 1'b0;
+            wr_mem_B          <= 1'b0;
+            wr_mem_C          <= 1'b0;
 /* other wr_mems = 0
 */	        
          end		       
@@ -480,7 +492,11 @@ module decoder
             addr_disp_mem_0   <= rd_mem_counter_disp; 
             addr_disp_mem_1   <= wr_mem_counter_disp;
          end
-         1'b1:	 swap rd and wr 
+         1'b1:
+         begin
+            addr_disp_mem_0   <= wr_mem_counter_disp; 
+            addr_disp_mem_1   <= rd_mem_counter_disp;
+         end
       endcase
 
    always @ (posedge clk) begin
